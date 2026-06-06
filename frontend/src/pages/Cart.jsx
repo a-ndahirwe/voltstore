@@ -85,9 +85,10 @@ const Cart = () => {
 
             <div style={{ display: "grid", gap: "1rem" }}>
               {cartItems.map((item) => {
+                const itemId = item._id;
                 const itemTotal = (item.price * item.quantity).toLocaleString("en-US");
                 return (
-                  <div key={item.id || item._id} style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: "1rem", padding: "1rem", borderRadius: 24, border: "1px solid #E2E8F0" }}>
+                  <div key={itemId} style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: "1rem", padding: "1rem", borderRadius: 24, border: "1px solid #E2E8F0" }}>
                     <img
                       src={item.image}
                       alt={item.name}
@@ -103,7 +104,7 @@ const Cart = () => {
                           <span style={{ fontWeight: 700, color: "#2563EB" }}>RWF {item.price.toLocaleString("en-US")}</span>
                           <button
                             type="button"
-                            onClick={() => removeFromCart(item.id || item._id)}
+                            onClick={() => removeFromCart(itemId)}
                             style={{
                               backgroundColor: "#FEE2E2",
                               border: "none",
@@ -119,7 +120,14 @@ const Cart = () => {
                         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", width: "max-content", border: "1px solid #E2E8F0", borderRadius: 16, padding: "0.35rem 0.5rem" }}>
                           <button
                             type="button"
-                            onClick={() => updateQuantity(item.id || item._id, item.quantity - 1)}
+                            onClick={() => {
+                              const newQuantity = item.quantity - 1;
+                              if (newQuantity === 0) {
+                                removeFromCart(itemId);
+                              } else {
+                                updateQuantity(itemId, newQuantity);
+                              }
+                            }}
                             style={{
                               border: "none",
                               backgroundColor: "transparent",
@@ -136,7 +144,7 @@ const Cart = () => {
                           <span style={{ minWidth: 24, textAlign: "center", fontWeight: 700 }}>{item.quantity}</span>
                           <button
                             type="button"
-                            onClick={() => updateQuantity(item.id || item._id, item.quantity + 1)}
+                            onClick={() => updateQuantity(itemId, item.quantity + 1)}
                             style={{
                               border: "none",
                               backgroundColor: "transparent",
@@ -166,7 +174,7 @@ const Cart = () => {
             <h2 style={{ margin: "0 0 1rem", fontSize: "1.6rem" }}>Order Summary</h2>
             <div style={{ display: "grid", gap: "0.85rem", marginBottom: "1.5rem" }}>
               {cartItems.map((item) => (
-                <div key={`summary-${item.id || item._id}`} style={{ display: "flex", justifyContent: "space-between", color: "#475569" }}>
+                <div key={`summary-${item._id}`} style={{ display: "flex", justifyContent: "space-between", color: "#475569" }}>
                   <span>{item.name} × {item.quantity}</span>
                   <span>RWF {(item.price * item.quantity).toLocaleString("en-US")}</span>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getProduct } from "../../api";
+import { getProduct } from "../api";
 import { useCart } from "../context/CartContext";
 
 const ProductDetail = () => {

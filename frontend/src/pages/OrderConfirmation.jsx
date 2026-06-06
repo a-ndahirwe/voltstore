@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getOrder } from "../../api";
+import { getOrder } from "../api";
 
 const OrderConfirmation = () => {
   const { id } = useParams();

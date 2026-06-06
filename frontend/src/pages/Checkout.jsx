@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { createOrder } from "../../api";
+import { createOrder } from "../api";
 
 const Checkout = () => {
   const navigate = useNavigate();
