@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: voltstore-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - voltstore-network
+
+  backend:
+    build: ./backend
+    container_name: voltstore-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/voltstore
+      - JWT_SECRET=voltstore_jwt_secret_2026
+      - PORT=5000
+    depends_on:
+      - mongo
+    networks:
+      - voltstore-network
+
+  frontend:
+    build: ./frontend
+    container_name: voltstore-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+    networks:
+      - voltstore-network
+
+volumes:
+  mongo-data:
+
+networks:
+  voltstore-network:
+    driver: bridge
