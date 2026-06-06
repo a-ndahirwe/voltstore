@@ -16,6 +16,7 @@ const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
         overflowX: "auto",
         padding: "0.75rem 0",
         WebkitOverflowScrolling: "touch",
+        scrollBehavior: "smooth",
       }}
     >
       <div
@@ -28,6 +29,7 @@ const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
       >
         {categories.map((category) => {
           const active = selectedCategory === category.key;
+
           return (
             <button
               key={category.key}
@@ -42,8 +44,8 @@ const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
                 border: active ? "1px solid #2563EB" : "1px solid #CBD5E1",
                 backgroundColor: active ? "#2563EB" : "#ffffff",
                 color: active ? "#ffffff" : "#0F172A",
-                padding: "0.7rem 1rem",
-                fontSize: "0.92rem",
+                padding: "0.75rem 1rem",
+                fontSize: "0.95rem",
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "transform 160ms ease, background-color 160ms ease, color 160ms ease",
