@@ -17,6 +17,7 @@ const Checkout = () => {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [paymentProcessing, setPaymentProcessing] = useState(null); // 'MTN' | 'Airtel' | null
 
   const validate = () => {
     const nextErrors = {};
@@ -26,6 +27,12 @@ const Checkout = () => {
     if (!formData.phone.trim()) nextErrors.phone = "Phone number is required.";
     if (!formData.address.trim()) nextErrors.address = "Delivery address is required.";
     if (!formData.city.trim()) nextErrors.city = "City is required.";
+    // Mobile money number validation when applicable
+    if (formData.paymentMethod.includes("Mobile Money")) {
+      const mobile = (formData.mobileNumber || "").trim();
+      if (!mobile) nextErrors.mobileNumber = "Mobile Money number is required.";
+      else if (!/^07\d{8}$/.test(mobile)) nextErrors.mobileNumber = "Enter a valid Rwandan mobile number starting with 07 and 10 digits.";
+    }
     return nextErrors;
   };
 
@@ -51,40 +58,60 @@ const Checkout = () => {
     setSubmitting(true);
     setSubmitError("");
 
-    try {
-      const orderPayload = {
-        customer: {
-          fullName: formData.fullName.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          address: formData.address.trim(),
-          city: formData.city.trim(),
-          paymentMethod: formData.paymentMethod,
-        },
-        items: cartItems.map((item) => ({
-          productId: item.id || item._id,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          subtotal: item.price * item.quantity,
-        })),
-        total: cartTotal,
-      };
+    const proceedOrder = async () => {
+      try {
+        const selectedPaymentMethod = formData.paymentMethod;
+        console.log('formData:', formData);
+        const orderPayload = {
+          customer: {
+            name: (formData.name || formData.fullName || "").trim(),
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+          },
+          items: cartItems.map((item) => ({
+            product: item._id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          totalAmount: cartTotal,
+          paymentMethod: selectedPaymentMethod,
+        };
 
-      const response = await createOrder(orderPayload);
-      const orderId = response?.data?.id || response?.data?._id || response?.data?.orderId;
-      clearCart();
-      if (orderId) {
-        navigate(`/order-confirmation/${orderId}`);
-      } else {
-        setSubmitError("Order created, but we could not determine the confirmation link.");
+        console.log("Order payload:", orderPayload);
+
+        const response = await createOrder(orderPayload);
+        const orderId = response?.data?.id || response?.data?._id || response?.data?.orderId;
+        clearCart();
+        if (orderId) {
+          navigate(`/order-confirmation/${orderId}`);
+        } else {
+          setSubmitError("Order created, but we could not determine the confirmation link.");
+        }
+      } catch (err) {
+        console.error('Order error:', err.response?.data || err.message);
+        setSubmitError("Unable to place your order. Please try again.");
+      } finally {
+        setSubmitting(false);
+        setPaymentProcessing(null);
       }
-    } catch (error) {
-      console.error(error);
-      setSubmitError("Unable to place your order. Please try again.");
-    } finally {
-      setSubmitting(false);
+    };
+
+    // If Mobile Money selected, simulate payment processing modal then place order
+    if (formData.paymentMethod.includes("Mobile Money")) {
+      const provider = formData.paymentMethod.includes("MTN") ? "MTN" : "Airtel";
+      setPaymentProcessing(provider);
+      // simulate delay then proceed
+      setTimeout(() => {
+        proceedOrder();
+      }, 3000);
+      return;
     }
+
+    // Otherwise place order immediately
+    await proceedOrder();
   };
 
   const fieldStyle = {
@@ -143,11 +170,79 @@ const Checkout = () => {
 
               <label style={{ display: "grid", gap: "0.4rem" }}>
                 <span style={{ fontWeight: 700 }}>Payment Method</span>
-                <select value={formData.paymentMethod} onChange={handleChange("paymentMethod")} style={fieldStyle}>
-                  <option value="Cash on Delivery">Cash on Delivery</option>
-                  <option value="Mobile Money (MTN)">Mobile Money (MTN)</option>
-                  <option value="Mobile Money (Airtel)">Mobile Money (Airtel)</option>
-                </select>
+                <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
+                  <div
+                    role="button"
+                    onClick={() => setFormData((c) => ({ ...c, paymentMethod: "Cash on Delivery", mobileNumber: "" }))}
+                    style={{
+                      padding: "0.9rem 1rem",
+                      borderRadius: 12,
+                      backgroundColor: "#F3F4F6",
+                      color: "#0F172A",
+                      cursor: "pointer",
+                      border: formData.paymentMethod === "Cash on Delivery" ? "2px solid #2563EB" : "2px solid transparent",
+                      minWidth: 170,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      fontWeight: 700,
+                    }}
+                  >
+                    💵 Cash on Delivery
+                  </div>
+
+                  <div
+                    role="button"
+                    onClick={() => setFormData((c) => ({ ...c, paymentMethod: "Mobile Money (MTN)" }))}
+                    style={{
+                      padding: "0.9rem 1rem",
+                      borderRadius: 12,
+                      backgroundColor: "#FFCB00",
+                      color: "#000000",
+                      cursor: "pointer",
+                      border: formData.paymentMethod === "Mobile Money (MTN)" ? "2px solid #2563EB" : "2px solid transparent",
+                      minWidth: 170,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      fontWeight: 700,
+                    }}
+                  >
+                    MTN Mobile Money
+                  </div>
+
+                  <div
+                    role="button"
+                    onClick={() => setFormData((c) => ({ ...c, paymentMethod: "Mobile Money (Airtel)" }))}
+                    style={{
+                      padding: "0.9rem 1rem",
+                      borderRadius: 12,
+                      backgroundColor: "#FF0000",
+                      color: "#FFFFFF",
+                      cursor: "pointer",
+                      border: formData.paymentMethod === "Mobile Money (Airtel)" ? "2px solid #2563EB" : "2px solid transparent",
+                      minWidth: 170,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Airtel Money
+                  </div>
+                </div>
+                {formData.paymentMethod.includes("Mobile Money") && (
+                  <div style={{ marginTop: 12 }}>
+                    <input
+                      type="tel"
+                      placeholder="07XXXXXXXX"
+                      value={formData.mobileNumber || ""}
+                      onChange={(e) => setFormData((c) => ({ ...c, mobileNumber: e.target.value }))}
+                      style={{ ...fieldStyle }}
+                    />
+                    {errors.mobileNumber && <div style={{ color: "#DC2626", fontSize: "0.9rem", marginTop: 6 }}>{errors.mobileNumber}</div>}
+                  </div>
+                )}
               </label>
             </div>
 
@@ -204,7 +299,22 @@ const Checkout = () => {
         </div>
       </div>
 
-      <style>{`@media (max-width: 980px) { div[style*='grid-template-columns: 1.4fr 0.8fr'] { grid-template-columns: 1fr !important; } }`}</style>
+      {paymentProcessing && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(2,6,23,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60 }}>
+          <div style={{ backgroundColor: "#ffffff", borderRadius: 16, padding: "2rem", width: 420, maxWidth: "90%", textAlign: "center", boxShadow: "0 18px 40px rgba(2,6,23,0.4)" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+              <div style={{ width: 56, height: 56, borderRadius: 9999, border: "6px solid rgba(37,99,235,0.15)", borderTopColor: "#2563EB", animation: "spin 1s linear infinite" }} />
+            </div>
+            <h3 style={{ margin: 0, marginBottom: 8 }}>Processing Mobile Money Payment...</h3>
+            <p style={{ margin: 0, color: "#64748B", marginBottom: 10 }}>Please check your phone and enter your PIN</p>
+            <div style={{ marginTop: 12, padding: "0.5rem 1rem", borderRadius: 8, fontWeight: 700, display: "inline-block", color: paymentProcessing === "MTN" ? "#000" : "#FFF", backgroundColor: paymentProcessing === "MTN" ? "#FFCB00" : "#FF0000" }}>
+              {paymentProcessing === "MTN" ? "MTN Mobile Money" : "Airtel Money"}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } @media (max-width: 980px) { div[style*='grid-template-columns: 1.4fr 0.8fr'] { grid-template-columns: 1fr !important; } }`}</style>
     </div>
   );
 };

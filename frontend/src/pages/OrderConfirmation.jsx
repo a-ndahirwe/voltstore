@@ -136,7 +136,7 @@ const OrderConfirmation = () => {
                 <div style={{ display: "grid", gap: "1rem" }}>
                   {(order?.items || []).map((item) => (
                     <div key={item.productId || item._id || item.name} style={{ display: "grid", gridTemplateColumns: "72px 1fr auto", gap: "1rem", alignItems: "center", padding: "1rem", borderRadius: 20, backgroundColor: "#F8FAFC" }}>
-                      <img src={item.image || item.productImage || "https://via.placeholder.com/72"} alt={item.name} style={{ width: 72, height: 72, borderRadius: 18, objectFit: "cover" }} />
+                      <img src={item.image || item.productImage || "https://images.unsplash.com/photo-1518770660439-4636190af475?w=100"} alt={item.name} onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=100'; }} style={{ width: 72, height: 72, borderRadius: 18, objectFit: "cover" }} />
                       <div>
                         <p style={{ margin: 0, fontWeight: 700, color: "#0F172A" }}>{item.name}</p>
                         <p style={{ margin: "0.35rem 0 0", color: "#64748B", fontSize: "0.9rem" }}>

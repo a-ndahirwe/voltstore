@@ -1,12 +1,12 @@
 import React from "react";
 
 const categories = [
-  { key: "All", label: "All", icon: "🛍️" },
-  { key: "Phones", label: "Phones", icon: "📱" },
-  { key: "Laptops", label: "Laptops", icon: "💻" },
-  { key: "TVs", label: "TVs", icon: "📺" },
-  { key: "Audio", label: "Audio", icon: "🎧" },
-  { key: "Accessories", label: "Accessories", icon: "⚡" },
+  { key: "All", label: "All", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=50" },
+  { key: "Phones", label: "Phones", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=50" },
+  { key: "Laptops", label: "Laptops", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=50" },
+  { key: "TVs", label: "TVs", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=50" },
+  { key: "Audio", label: "Audio", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=50" },
+  { key: "Accessories", label: "Accessories", image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=50" },
 ];
 
 const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
@@ -61,7 +61,11 @@ const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
                 }
               }}
             >
-              <span>{category.icon}</span>
+              <img
+                src={category.image}
+                alt={category.label}
+                style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', marginRight: '6px' }}
+              />
               <span>{category.label}</span>
             </button>
           );
