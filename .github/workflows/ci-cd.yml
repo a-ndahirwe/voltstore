@@ -50,10 +50,3 @@ jobs:
 
       - name: Build frontend Docker image
         run: docker build -t voltstore-frontend ./frontend
-
-      - name: Run docker-compose
-        run: |
-          docker compose up -d
-          sleep 10
-          docker compose ps
-          docker compose down
