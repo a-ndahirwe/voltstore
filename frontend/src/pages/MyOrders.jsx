@@ -87,21 +87,21 @@ const MyOrders = () => {
                 </div>
 
                 <div style={{ marginTop: 12, display: 'grid', gap: 8 }}>
-                  {(order.orderItems || []).map((it, idx) => (
+                  {(order.items || []).map((it, idx) => (
                     <div key={idx} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                       <img src={it.image || (it.product && it.product.image) || 'https://via.placeholder.com/60'} width={60} height={60} style={{ borderRadius: 8, objectFit: 'cover' }} alt={it.name || it.product?.name} />
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 700 }}>{it.name || it.product?.name}</div>
-                        <div style={{ color: '#64748B', fontSize: 13 }}>Qty: {it.qty || it.quantity || 1}</div>
+                        <div style={{ color: '#64748B', fontSize: 13 }}>Qty: {it.quantity || 1}</div>
                       </div>
-                      <div style={{ fontWeight: 800, color: '#2563EB' }}>{(it.price || it.product?.price || 0).toLocaleString()} RWF</div>
+                      <div style={{ fontWeight: 800, color: '#2563EB' }}>RWF {((it.price || it.product?.price || 0) * (it.quantity || 1)).toLocaleString()}</div>
                     </div>
                   ))}
                 </div>
 
                 <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ color: '#64748B' }}>Payment: {order.paymentMethod || 'N/A'}</div>
-                  <div style={{ fontWeight: 800, color: '#2563EB' }}>Total: {(order.totalPrice || 0).toLocaleString()} RWF</div>
+                  <div style={{ fontWeight: 800, color: '#2563EB' }}>Total: {(order.totalAmount || 0).toLocaleString()} RWF</div>
                 </div>
               </div>
             ))}

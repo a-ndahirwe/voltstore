@@ -48,7 +48,7 @@ const OrderConfirmation = () => {
     }
   };
 
-  const totalAmount = order?.total ?? order?.orderTotal ?? 0;
+  const totalAmount = order?.totalAmount ?? order?.orderTotal ?? order?.total ?? 0;
   const formattedTotal = Number(totalAmount).toLocaleString("en-US");
   const status = order?.status || order?.orderStatus || "Pending";
   const statusColor = status.toLowerCase() === "pending" ? "#FACC15" : status.toLowerCase() === "delivered" ? "#16A34A" : "#2563EB";
