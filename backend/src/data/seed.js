@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const User = require('../models/User');
 
 const products = [
   {
@@ -555,6 +556,20 @@ const products = [
 
 const seedData = async () => {
   try {
+    const adminEmail = 'admin@voltstore.com';
+    const adminExists = await User.findOne({ email: adminEmail });
+    if (!adminExists) {
+      await User.create({
+        name: 'VoltStore Admin',
+        email: adminEmail,
+        password: 'Admin123!',
+        isAdmin: true,
+      });
+      console.log('✅ Admin user seeded: admin@voltstore.com / Admin123!');
+    } else {
+      console.log('ℹ️  Admin user already exists, skipping admin seed');
+    }
+
     const count = await Product.countDocuments();
     if (count === 0) {
       await Product.insertMany(products);

@@ -73,6 +73,8 @@ const Navbar = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <Link to="/" style={{ color: '#0F172A', textDecoration: 'none', fontWeight: 500 }}>Home</Link>
           <Link to="/products" style={{ color: '#0F172A', textDecoration: 'none', fontWeight: 500 }}>Products</Link>
+          <Link to="/about" style={{ color: '#0F172A', textDecoration: 'none', fontWeight: 500 }}>About</Link>
+          <Link to="/contact" style={{ color: '#0F172A', textDecoration: 'none', fontWeight: 500 }}>Contact</Link>
 
           <button type="button" onClick={() => navigate('/cart')} style={{ position: 'relative', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', padding: 6 }}>
             <span style={{ fontSize: 20 }}>🛒</span>
@@ -91,6 +93,9 @@ const Navbar = () => {
                 <div style={{ position: 'absolute', right: 0, top: 'calc(100% + 10px)', minWidth: 180, backgroundColor: '#ffffff', border: '1px solid rgba(15,23,42,0.12)', borderRadius: 12, boxShadow: '0 18px 40px rgba(15,23,42,0.12)', padding: '8px 0', zIndex: 1100 }}>
                   <button type="button" onClick={() => { setDropdownOpen(false); navigate('/profile'); }} style={{ width: '100%', textAlign: 'left', padding: '10px 16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#0F172A', fontWeight: 700 }}>My Profile</button>
                   <button type="button" onClick={() => { setDropdownOpen(false); navigate('/orders'); }} style={{ width: '100%', textAlign: 'left', padding: '10px 16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#0F172A', fontWeight: 700 }}>My Orders</button>
+                  {user.isAdmin && (
+                    <button type="button" onClick={() => { setDropdownOpen(false); navigate('/admin'); }} style={{ width: '100%', textAlign: 'left', padding: '10px 16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#2563EB', fontWeight: 700 }}>Admin Panel</button>
+                  )}
                   <button type="button" onClick={handleSignOut} style={{ width: '100%', textAlign: 'left', padding: '10px 16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#dc2626', fontWeight: 700 }}>Sign Out</button>
                 </div>
               )}

@@ -16,6 +16,11 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminOrders from "./pages/admin/AdminOrders";
+import ContactUs from "./pages/ContactUs";
+import AboutUs from "./pages/AboutUs";
 
 const App = () => {
   return (
@@ -39,6 +44,11 @@ const App = () => {
               <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/orders" element={<MyOrders />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/admin/orders" element={<AdminOrders />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/about" element={<AboutUs />} />
             </Routes>
           </main>
 

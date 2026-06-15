@@ -19,6 +19,7 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', require('./routes/admin'));
 
 app.get('/api/health', (req, res) =>
   res.json({ status: 'ok', message: 'VoltStore API running' })
